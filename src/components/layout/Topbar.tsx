@@ -1,7 +1,7 @@
 export default function Topbar() {
   return (
-    <header className="h-18 border-b bg-white flex items-center px-6">
-      <h1 className="text-xl font-bold text-amber-900">
+    <header className="h-16 border-b border-gray-800 bg-gray-950 flex items-center px-6">
+      <h1 className="text-lg font-semibold text-gray-100">
         Vyntra Care
       </h1>
     </header>
