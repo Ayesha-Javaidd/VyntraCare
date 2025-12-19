@@ -8,7 +8,7 @@ export default function Home() {
       {/* Top Navigation */}
       <header className="flex justify-end p-6">
         <Link href="/auth/login">
-          <Button label="Login" variant="ghost" />
+          <Button  label="Login" variant="ghost" />
         </Link>
       </header>
 
