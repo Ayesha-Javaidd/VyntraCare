@@ -50,13 +50,11 @@
 //     );
 // }
 
+"use client";
 
-
-'use client';
-
-import React from 'react';
-import Link from 'next/link';
-import { useUser } from '@/hooks/use-user';
+import React from "react";
+import Link from "next/link";
+import { useUser } from "@/hooks/use-user";
 
 export default function Navbar() {
   const { profile, signOut } = useUser();
@@ -64,27 +62,40 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-[#0A1A33]  backdrop-blur-md border-b border-[#0A1A33]/20">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-[#0A1A33] font-bold text-xl group-hover:scale-110 transition-transform">
             V
           </div>
-          <span className="text-xl font-bold text-white tracking-tight">Vyntra Care</span>
+          <span className="text-xl font-bold text-white tracking-tight">
+            Vyntra Care
+          </span>
         </Link>
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8">
-          <Link href="/shop" className="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors">
+          <Link
+            href="/shop"
+            className="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors"
+          >
             Shop
           </Link>
-          <Link href="/shop/sizing" className="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors">
+          <Link
+            href="/shop/sizing"
+            className="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors"
+          >
             AI Sizing
           </Link>
-          <Link href="/about" className="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors">
+          <Link
+            href="/about"
+            className="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors"
+          >
             About
           </Link>
-          <Link href="/contact" className="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors">
+          <Link
+            href="/contact"
+            className="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors"
+          >
             Contact
           </Link>
         </div>
@@ -94,14 +105,18 @@ export default function Navbar() {
           {profile ? (
             <div className="flex items-center gap-4">
               <Link
-                href={profile.role === 'admin' ? '/admin/dashboard' : '/facility/dashboard'}
+                href={
+                  profile.role === "admin"
+                    ? "/admin/dashboard"
+                    : "/facility/dashboard"
+                }
                 className="text-sm font-bold text-[#63B3ED] hover:text-white transition-colors"
               >
                 Dashboard
               </Link>
               <button
                 onClick={() => signOut()}
-                className="text-sm font-semibold text-white hover:text-red-400 transition-colors"
+                className="text-sm font-semibold cursor-pointer text-white hover:text-red-400 transition-colors"
               >
                 Logout
               </button>
