@@ -1,12 +1,14 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalShellComponent } from '../modal-shell/modal-shell.component';
 import { FormsModule } from '@angular/forms';
+import { ModalShellComponent } from '../modal-shell/modal-shell.component';
 
 export interface Product {
+  id?: number;
   name: string;
   category: string;
-  unitType: string;
+  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
+  unitType?: string;
   imageUrl?: string;
 }
 
@@ -23,6 +25,7 @@ export class ProductModalComponent {
     name: '',
     category: '',
     unitType: '',
+    status: 'In Stock', // default value
     imageUrl: '',
   };
   @Input() categories: string[] = [];
@@ -47,6 +50,10 @@ export class ProductModalComponent {
   }
 
   handleSubmit() {
+    // Ensure status is defined before emitting
+    if (!this.product.status) {
+      this.product.status = 'In Stock';
+    }
     this.submit.emit(this.product);
   }
 }

@@ -36,8 +36,12 @@
       [dropdowns]="productFilters"
       (filtersChange)="onFiltersChange($event)"
     ></app-filters>
-    <button app-button (click)="addNewProduct()">
-      <i class="fas fa-plus mr-2"></i>
+    <button
+      app-button
+      (click)="addNewProduct()"
+      class="border-2 border-gray-600 cursor-pointer bg-blue-50 rounded-lg px-4 py-2 flex items-center gap-2 hover:bg-gray-100 transition"
+    >
+      <i class="fas fa-plus"></i>
       Add New Product
     </button>
   </div>
@@ -57,4 +61,14 @@
         : deleteProduct($event.row)
     "
   ></app-data-table>
+
+  <app-product-modal
+    [show]="showModal"
+    [product]="selectedProduct!"
+    [categories]="categories"
+    [units]="units"
+    [mode]="modalMode"
+    (close)="showModal = false"
+    (submit)="handleModalSubmit($event)"
+  ></app-product-modal>
 </div>

@@ -9,13 +9,11 @@ import { FiltersComponent } from '../../../../shared/components/ui/filters/filte
 import { HeaderComponent } from '../../../../shared/components/layout/header/header.component';
 import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 import { StatCardComponent } from '../../../../shared/components/ui/stat-card/stat-card.component';
-
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
-}
+import {
+  Product,
+  ProductModalComponent,
+} from '../../../../shared/components/ui/product-modal/product-modal.component';
+import { ModalShellComponent } from '../../../../shared/components/ui/modal-shell/modal-shell.component';
 
 @Component({
   selector: 'app-products-management',
@@ -26,6 +24,7 @@ interface Product {
     FiltersComponent,
     HeaderComponent,
     StatCardComponent,
+    ProductModalComponent,
   ],
   templateUrl: './admin-products.component.html',
   styleUrls: ['./admin-products.component.css'],
@@ -137,16 +136,58 @@ export class AdminProductsComponent implements OnInit {
     return this.products.filter((p) => p.status === 'Out of Stock').length;
   }
 
+  categories: string[] = [
+    'Disposables',
+    'PPE',
+    'Diagnostic',
+    'First Aid',
+    'Wound Care',
+    'Disinfectants',
+  ];
+  units: string[] = ['Box', 'Pack', 'Piece', 'Set', 'Bottle'];
+
   // Actions
-  addNewProduct() {
-    alert('Add New Product');
-  }
+
   addStock(product: Product) {
     alert(`Add stock to ${product.name}`);
   }
-  editProduct(product: Product) {
-    alert(`Editing ${product.name}`);
+  showModal = false;
+  modalMode: 'add' | 'update' = 'add';
+  selectedProduct: Product | null = null;
+
+  addNewProduct() {
+    this.modalMode = 'add';
+    this.selectedProduct = {
+      id: 0,
+      name: '',
+      category: '',
+      status: 'In Stock',
+    };
+    this.showModal = true;
   }
+
+  editProduct(product: Product) {
+    this.modalMode = 'update';
+    this.selectedProduct = { ...product };
+    this.showModal = true;
+  }
+
+  handleModalSubmit(product: Product) {
+    if (this.modalMode === 'add') {
+      const newId = Math.max(...this.products.map((p) => p.id ?? 0)) + 1;
+
+      this.products.push({ ...product, id: newId });
+    } else if (this.modalMode === 'update' && this.selectedProduct) {
+      const index = this.products.findIndex(
+        (p) => p.id === this.selectedProduct!.id
+      );
+      if (index > -1)
+        this.products[index] = { ...product, id: this.selectedProduct.id };
+    }
+    this.filteredProducts = [...this.products];
+    this.showModal = false;
+  }
+
   deleteProduct(product: Product) {
     if (confirm(`Delete ${product.name}?`)) {
       this.products = this.products.filter((p) => p.id !== product.id);
