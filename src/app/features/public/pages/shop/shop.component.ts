@@ -21,7 +21,7 @@ const CATEGORIES = [
 
 @Component({
   selector: 'app-public-shop',
-  templateUrl: 'shop.component.html',
+  templateUrl: './shop.component.html',
   styleUrl: './shop.component.css',
   imports: [CommonModule, RouterModule],
 })
