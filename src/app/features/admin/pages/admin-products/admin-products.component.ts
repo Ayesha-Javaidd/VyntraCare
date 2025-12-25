@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { TableComponent } from '../../../../shared/components/ui/table/table.component';
-import { FormsModule, NgModel } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+
+import {
+  DataTableComponent,
+  TableColumn,
+} from '../../../../shared/components/ui/data-table/data-table.component';
+import { FiltersComponent } from '../../../../shared/components/ui/filters/filters.component';
+import { HeaderComponent } from "../../../../shared/components/layout/header/header.component";
 
 interface Product {
   id: number;
@@ -16,20 +21,14 @@ interface Product {
   lastUpdated: string;
 }
 
-interface FilterOption {
-  label: string;
-  value: string;
-}
-
 @Component({
   standalone: true,
   selector: 'app-products-management',
   templateUrl: './admin-products.component.html',
   styleUrls: ['./admin-products.component.css'],
-  imports: [CommonModule, TableComponent, FormsModule],
+  imports: [CommonModule, DataTableComponent, FiltersComponent, HeaderComponent],
 })
-export class AdminProductsComponent {
-  // Products data
+export class AdminProductsComponent implements OnInit {
   products: Product[] = [
     {
       id: 1,
@@ -128,187 +127,103 @@ export class AdminProductsComponent {
       lastUpdated: '2024-01-14',
     },
   ];
-
-  // Table headers
-  productHeaders = [
-    'Product Name',
-    'Category',
-    'Quantity Sold',
-    'Available Qty',
-    'Avg Sale Price',
-    'Avg Purchase Price',
-    'Margin',
-    'Status',
-    'Actions',
+  productColumns: TableColumn[] = [
+    { key: 'name', label: 'Product', type: 'text' },
+    { key: 'category', label: 'Category', type: 'badge' },
+    { key: 'quantitySold', label: 'Sold', type: 'text' },
+    { key: 'availableQty', label: 'Available', type: 'text' }, // changed from 'progress'
+    { key: 'avgSalePrice', label: 'Avg Sale', type: 'text' },
+    { key: 'avgPurchasePrice', label: 'Avg Purchase', type: 'text' },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'badge',
+      badgeColors: {
+        'In Stock': 'bg-green-100 text-green-800',
+        'Low Stock': 'bg-yellow-100 text-yellow-800',
+        'Out of Stock': 'bg-red-100 text-red-800',
+      },
+    },
   ];
 
-  // Filter options
-  categoryOptions: FilterOption[] = [
-    { label: 'All Categories', value: 'all' },
-    { label: 'Disposables', value: 'Disposables' },
-    { label: 'PPE', value: 'PPE' },
-    { label: 'Diagnostic', value: 'Diagnostic' },
-    { label: 'First Aid', value: 'First Aid' },
-    { label: 'Wound Care', value: 'Wound Care' },
-    { label: 'Disinfectants', value: 'Disinfectants' },
+  productFilters = [
+    {
+      key: 'category',
+      label: 'Category',
+      options: [
+        'Disposables',
+        'PPE',
+        'Diagnostic',
+        'First Aid',
+        'Wound Care',
+        'Disinfectants',
+      ],
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      options: ['In Stock', 'Low Stock', 'Out of Stock'],
+    },
   ];
 
-  statusOptions: FilterOption[] = [
-    { label: 'All Status', value: 'all' },
-    { label: 'In Stock', value: 'In Stock' },
-    { label: 'Low Stock', value: 'Low Stock' },
-    { label: 'Out of Stock', value: 'Out of Stock' },
-  ];
+  filteredProducts: Product[] = [];
+  currentPage = 1;
+  pageSize = 5;
 
-  sortOptions: FilterOption[] = [
-    { label: 'Most Sold', value: 'most-sold' },
-    { label: 'Highest Margin', value: 'highest-margin' },
-    { label: 'Highest Price', value: 'highest-price' },
-    { label: 'Name (A-Z)', value: 'name-asc' },
-    { label: 'Name (Z-A)', value: 'name-desc' },
-  ];
+  totalProducts = 0;
+  totalSold = 0;
+  totalAvailable = 0;
+  averageMargin = 0;
 
-  // Selected filters
-  selectedCategory: string = 'all';
-  selectedStatus: string = 'all';
-  selectedSort: string = 'most-sold';
-  searchQuery: string = '';
-
-  // Analytics metrics
-  totalProducts = this.products.length;
-  totalSold = this.products.reduce(
-    (sum, product) => sum + product.quantitySold,
-    0
-  );
-  totalAvailable = this.products.reduce(
-    (sum, product) => sum + product.availableQty,
-    0
-  );
-  averageMargin =
-    this.products.reduce((sum, product) => sum + product.margin, 0) /
-    this.products.length;
-
-  // Get filtered and sorted products
-  get filteredProducts(): Product[] {
-    let filtered = [...this.products];
-
-    // Apply search filter
-    if (this.searchQuery) {
-      filtered = filtered.filter(
-        (product) =>
-          product.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          product.category
-            .toLowerCase()
-            .includes(this.searchQuery.toLowerCase())
-      );
-    }
-
-    // Apply category filter
-    if (this.selectedCategory !== 'all') {
-      filtered = filtered.filter(
-        (product) => product.category === this.selectedCategory
-      );
-    }
-
-    // Apply status filter
-    if (this.selectedStatus !== 'all') {
-      filtered = filtered.filter(
-        (product) => product.status === this.selectedStatus
-      );
-    }
-
-    // Apply sorting
-    switch (this.selectedSort) {
-      case 'most-sold':
-        filtered.sort((a, b) => b.quantitySold - a.quantitySold);
-        break;
-      case 'highest-margin':
-        filtered.sort((a, b) => b.margin - a.margin);
-        break;
-      case 'highest-price':
-        filtered.sort((a, b) => b.avgSalePrice - a.avgSalePrice);
-        break;
-      case 'name-asc':
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'name-desc':
-        filtered.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-    }
-
-    return filtered;
+  ngOnInit(): void {
+    this.filteredProducts = [...this.products];
+    this.updateAnalytics();
   }
 
-  // Get status class
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'In Stock':
-        return 'bg-green-100 text-green-800';
-      case 'Low Stock':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Out of Stock':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  onFiltersChange(filters: { [key: string]: string }) {
+    const search = (filters['search'] || '').toLowerCase();
+    const category = filters['category'];
+    const status = filters['status'];
+
+    this.filteredProducts = this.products.filter((p) => {
+      const matchesSearch =
+        p.name.toLowerCase().includes(search) ||
+        p.category.toLowerCase().includes(search);
+
+      const matchesCategory = !category || p.category === category;
+      const matchesStatus = !status || p.status === status;
+
+      return matchesSearch && matchesCategory && matchesStatus;
+    });
+
+    this.currentPage = 1;
   }
 
-  // Get margin class based on value
-  getMarginClass(margin: number): string {
-    if (margin >= 60) return 'text-green-600 font-bold';
-    if (margin >= 50) return 'text-blue-600';
-    return 'text-gray-600';
-  }
-
-  // Get stock level indicator
-  getStockLevel(available: number, sold: number): string {
-    const percentage = (available / (available + sold)) * 100;
-    if (percentage < 20) return 'text-red-600';
-    if (percentage < 40) return 'text-yellow-600';
-    return 'text-green-600';
-  }
-
-  // Add new product
   addNewProduct() {
-    // In a real app, this would open a modal/form
-    alert('Add New Product functionality would open a form here.');
+    alert('Add New Product');
   }
 
-  // Edit product
   editProduct(product: Product) {
-    // In a real app, this would open a modal/form
     alert(`Editing product: ${product.name}`);
   }
 
-  // Delete product
   deleteProduct(product: Product) {
-    if (confirm(`Are you sure you want to delete ${product.name}?`)) {
+    if (confirm(`Delete ${product.name}?`)) {
       this.products = this.products.filter((p) => p.id !== product.id);
+      this.filteredProducts = [...this.products];
       this.updateAnalytics();
     }
   }
 
-  // Update analytics after changes
   private updateAnalytics() {
     this.totalProducts = this.products.length;
-    this.totalSold = this.products.reduce(
-      (sum, product) => sum + product.quantitySold,
-      0
-    );
+    this.totalSold = this.products.reduce((sum, p) => sum + p.quantitySold, 0);
     this.totalAvailable = this.products.reduce(
-      (sum, product) => sum + product.availableQty,
+      (sum, p) => sum + p.availableQty,
       0
     );
     this.averageMargin =
-      this.products.reduce((sum, product) => sum + product.margin, 0) /
+      this.products.reduce((sum, p) => sum + p.margin, 0) /
       this.products.length;
-  }
-
-  // Reset filters
-  resetFilters() {
-    this.selectedCategory = 'all';
-    this.selectedStatus = 'all';
-    this.selectedSort = 'most-sold';
-    this.searchQuery = '';
   }
 }

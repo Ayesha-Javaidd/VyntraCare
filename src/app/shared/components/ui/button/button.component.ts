@@ -18,6 +18,14 @@ export class ButtonComponent {
   @Input() icon?: string;
   @Output() onClick = new EventEmitter<void>();
 
+
+
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+
+  @Input() disabled = false;
+
+  @Input() customColor?: string;
+
   baseStyles =
     'inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed gap-2';
 

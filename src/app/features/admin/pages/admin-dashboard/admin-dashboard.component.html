@@ -1,3 +1,5 @@
+<app-header></app-header>
+
 <div class="p-6 space-y-6">
   <p class="text-muted-foreground">
     Welcome back! Here's what's happening with your business today.
@@ -76,37 +78,34 @@
     </div>
   </div>
 
-  <!-- Orders History Full Width at the End -->
-  <div class="bg-card rounded-lg border border-border p-6 shadow-sm w-full">
-    <div class="flex justify-between items-center mb-6">
+  <!-- Orders History -->
+  <div
+    class="bg-card rounded-lg border border-border p-6 shadow-sm w-full space-y-4"
+  >
+    <div class="flex justify-between items-center">
       <h2 class="text-xl font-semibold">Orders History</h2>
-      <button class="text-sm text-primary hover:underline font-medium">
-        View All
-      </button>
     </div>
 
-    <app-table [headers]="orderHeaders" [rows]="orders">
-      <ng-template #rowTemplate let-order>
-        <td class="py-4 px-4 font-medium">{{ order.orderId }}</td>
-        <td class="py-4 px-4">{{ order.entity }}</td>
-        <td class="py-4 px-4 font-medium">
-          ${{ order.totalAmount.toLocaleString() }}
-        </td>
-        <td class="py-4 px-4">
-          <div class="flex items-center gap-2">
-            <i
-              [ngClass]="getStatusIcon(order.invoiceStatus)"
-              class="text-sm"
-            ></i>
-            <span
-              class="px-3 py-1 rounded-full text-xs font-medium"
-              [ngClass]="getStatusClass(order.invoiceStatus)"
-            >
-              {{ order.invoiceStatus }}
-            </span>
-          </div>
-        </td>
-      </ng-template>
-    </app-table>
+    <!-- Filters -->
+    <app-filters
+      [searchPlaceholder]="'Search orders...'"
+      [dropdowns]="orderFilterDropdowns"
+      (filtersChange)="onOrderFiltersChange($event)"
+    >
+    </app-filters>
+
+    <!-- Data Table -->
+    <app-data-table
+      title="Orders"
+      [columns]="orderColumns"
+      [rows]="filteredOrders"
+      [pageSize]="5"
+      [currentPage]="currentPage"
+      [totalItems]="filteredOrders.length"
+      [showViewAll]="true"
+      viewAllRoute="/admin/orders"
+      (pageChange)="currentPage = $event"
+    >
+    </app-data-table>
   </div>
 </div>
