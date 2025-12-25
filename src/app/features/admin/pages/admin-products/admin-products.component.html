@@ -1,137 +1,60 @@
-<app-header></app-header>
-<div class="p-6 space-y-6">
-  <!-- Page Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-    <p class="text-muted-foreground mt-2">
-      Detailed product performance insights
-    </p>
+<app-header pageTitle="Product Management">
+  <button app-button class="ml-auto" (click)="goBack()">
+    <i class="fas fa-arrow-left mr-2"></i>
+    Back
+  </button>
+</app-header>
 
-    <button
-      (click)="addNewProduct()"
-      class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-    >
+<div class="p-6 space-y-6 bg-gray-50 min-h-screen">
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <app-stat-card
+      title="Total Products"
+      [value]="totalProducts"
+      icon="fas fa-boxes"
+    ></app-stat-card>
+    <app-stat-card
+      title="In Stock"
+      [value]="inStock"
+      icon="fas fa-check-circle"
+    ></app-stat-card>
+    <app-stat-card
+      title="Low Stock"
+      [value]="lowStock"
+      icon="fas fa-exclamation-triangle"
+    ></app-stat-card>
+    <app-stat-card
+      title="Out of Stock"
+      [value]="outOfStock"
+      icon="fas fa-times-circle"
+    ></app-stat-card>
+  </div>
+
+  <!-- Filters + Add New Product -->
+  <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
+    <app-filters
+      [dropdowns]="productFilters"
+      (filtersChange)="onFiltersChange($event)"
+    ></app-filters>
+    <button app-button (click)="addNewProduct()">
       <i class="fas fa-plus mr-2"></i>
       Add New Product
     </button>
   </div>
 
-  <!-- Analytics Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <!-- Total Products Card -->
-    <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm font-medium text-muted-foreground mb-2">
-            Total Products
-          </p>
-          <h3 class="text-3xl font-bold tracking-tight">{{ totalProducts }}</h3>
-          <p class="text-sm text-muted-foreground mt-2">Active in inventory</p>
-        </div>
-        <div
-          class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100"
-        >
-          <i class="fas fa-boxes text-xl text-blue-600"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Total Sold Card -->
-    <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm font-medium text-muted-foreground mb-2">
-            Total Quantity Sold
-          </p>
-          <h3 class="text-3xl font-bold tracking-tight">
-            {{ totalSold.toLocaleString() }}
-          </h3>
-          <p class="text-sm text-muted-foreground mt-2">Across all products</p>
-        </div>
-        <div
-          class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100"
-        >
-          <i class="fas fa-chart-line text-xl text-green-600"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Available Stock Card -->
-    <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm font-medium text-muted-foreground mb-2">
-            Available Quantity
-          </p>
-          <h3 class="text-3xl font-bold tracking-tight">
-            {{ totalAvailable.toLocaleString() }}
-          </h3>
-          <p class="text-sm text-muted-foreground mt-2">
-            Current inventory stock
-          </p>
-        </div>
-        <div
-          class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100"
-        >
-          <i class="fas fa-warehouse text-xl text-purple-600"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Average Margin Card -->
-    <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm font-medium text-muted-foreground mb-2">
-            Average Margin
-          </p>
-          <h3 class="text-3xl font-bold tracking-tight">
-            {{ averageMargin.toFixed(1) }}%
-          </h3>
-          <p class="text-sm text-muted-foreground mt-2">Across all products</p>
-        </div>
-        <div
-          class="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100"
-        >
-          <i class="fas fa-percentage text-xl text-yellow-600"></i>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
-    <div
-      class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
-    >
-      <h2 class="text-xl font-semibold">Analytics (Products POV)</h2>
-    </div>
-
-    <!-- Filters -->
-    <app-filters
-      [searchPlaceholder]="'Search products...'"
-      [dropdowns]="productFilters"
-      (filtersChange)="onFiltersChange($event)"
-    >
-    </app-filters>
-
-    <!-- Table -->
-    <div class="mt-6">
-      <app-data-table
-        title="Products"
-        [columns]="productColumns"
-        [rows]="filteredProducts"
-        [pageSize]="pageSize"
-        [currentPage]="currentPage"
-        [totalItems]="filteredProducts.length"
-        [enableActions]="true"
-        [visibleActions]="['edit', 'delete']"
-        (pageChange)="currentPage = $event"
-        (actionClick)="
-          $event.action === 'edit'
-            ? editProduct($event.row)
-            : deleteProduct($event.row)
-        "
-      >
-      </app-data-table>
-    </div>
-  </div>
+  <app-data-table
+    [columns]="productColumns"
+    [rows]="filteredProducts"
+    [pageSize]="pageSize"
+    [currentPage]="currentPage"
+    [totalItems]="filteredProducts.length"
+    [enableActions]="true"
+    [visibleActions]="['edit', 'delete']"
+    (pageChange)="currentPage = $event"
+    (actionClick)="
+      $event.action === 'edit'
+        ? editProduct($event.row)
+        : deleteProduct($event.row)
+    "
+  ></app-data-table>
 </div>

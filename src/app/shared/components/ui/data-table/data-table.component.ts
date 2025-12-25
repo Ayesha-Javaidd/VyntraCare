@@ -85,7 +85,24 @@ export class DataTableComponent {
 export interface TableColumn {
   key: string; // property name in row object
   label: string; // column header label
-  type?: 'text' | 'badge' | 'avatar' | 'date' | 'action' | 'progress' | 'link';
+  type?:
+    | 'text'
+    | 'badge'
+    | 'avatar'
+    | 'date'
+    | 'action'
+    | 'progress'
+    | 'link'
+    | 'button';
   badgeColors?: { [key: string]: string }; // used only when type = 'badge'
   link?: string; // used when type = 'link'
+
+  // Optional button properties
+  buttonText?: string;
+  buttonAction?: (row: any) => void;
+  actionButtons?: {
+    label: string;
+    action: (row: any) => void;
+    style: string;
+  }[];
 }

@@ -28,7 +28,7 @@ import { AdminFacilitiesComponent } from './features/admin/pages/admin-facilitie
 import { AdminOrdersComponent } from './features/admin/pages/admin-orders/admin-orders.component';
 import { AdminPdfExtractionComponent } from './features/admin/pages/admin-pdf-extraction/admin-pdf-extraction.component';
 import { AdminProductsComponent } from './features/admin/pages/admin-products/admin-products.component';
-
+import { ProductAnalyticsComponent } from './features/admin/pages/product-analytics/product-analytics.component';
 // Facility pages
 import { FacilityDashboardComponent } from './features/facility/pages/facility-dashboard/facility-dashboard.component';
 import { FacilityInventoryComponent } from './features/facility/pages/facility-inventory/facility-inventory.component';
@@ -74,6 +74,7 @@ export const routes: Routes = [
       { path: 'orders', component: AdminOrdersComponent },
       { path: 'pdf-extraction', component: AdminPdfExtractionComponent },
       { path: 'products', component: AdminProductsComponent },
+      { path: 'products-analytics', component: ProductAnalyticsComponent },
     ],
   },
 

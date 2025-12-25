@@ -1,1 +1,34 @@
-<p>admin-orders works!</p>
+<app-header pageTitle="Manage Orders"></app-header>
+<div class="p-6 space-y-6">
+  <p class="text-muted-foreground mt-2">
+    Track and manage all orders in your system.
+  </p>
+  <!-- Filters -->
+  <app-filters
+    [searchPlaceholder]="'Search orders...'"
+    [dropdowns]="orderFilters"
+    (filtersChange)="onFiltersChange($event)"
+  >
+  </app-filters>
+
+  <!-- Orders Table -->
+  <div class="mt-6">
+    <app-data-table
+      title="Orders"
+      [columns]="orderColumns"
+      [rows]="filteredOrders"
+      [pageSize]="pageSize"
+      [currentPage]="currentPage"
+      [totalItems]="filteredOrders.length"
+      [enableActions]="true"
+      [visibleActions]="['view', 'delete']"
+      (pageChange)="currentPage = $event"
+      (actionClick)="
+        $event.action === 'view'
+          ? viewOrder($event.row)
+          : deleteOrder($event.row)
+      "
+    >
+    </app-data-table>
+  </div>
+</div>

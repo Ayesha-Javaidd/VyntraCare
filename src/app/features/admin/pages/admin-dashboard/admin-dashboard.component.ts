@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { StatsCardComponent } from '../../../../shared/components/ui/stats-card/stats-card.component';
-import { DataTableComponent, TableColumn } from '../../../../shared/components/ui/data-table/data-table.component';
+import { StatCardComponent } from '../../../../shared/components/ui/stat-card/stat-card.component';
+import {
+  DataTableComponent,
+  TableColumn,
+} from '../../../../shared/components/ui/data-table/data-table.component';
 import { FiltersComponent } from '../../../../shared/components/ui/filters/filters.component';
-import { HeaderComponent } from "../../../../shared/components/layout/header/header.component";
+import { HeaderComponent } from '../../../../shared/components/layout/header/header.component';
+import { Router } from '@angular/router';
 
 interface Order {
   orderId: string;
@@ -46,13 +50,16 @@ interface AnalyticsSection {
   styleUrls: ['./admin-dashboard.component.css'],
   imports: [
     CommonModule,
-    StatsCardComponent,
+    StatCardComponent,
     DataTableComponent,
     FiltersComponent,
-    HeaderComponent
-],
+    HeaderComponent,
+    StatCardComponent,
+  ],
 })
 export class AdminDashboardComponent implements OnInit {
+  constructor(private router: Router) {}
+
   /* =======================
      Stats Cards
   ======================= */
@@ -124,7 +131,8 @@ export class AdminDashboardComponent implements OnInit {
   analyticsSections: AnalyticsSection[] = [
     {
       title: 'Products POV',
-      description: 'View detailed product analytics and performance metrics',
+      description:
+        'Click to view detailed product analytics and performance metrics',
       icon: 'fas fa-chart-bar',
     },
     {
@@ -181,7 +189,7 @@ export class AdminDashboardComponent implements OnInit {
      DataTable Configuration
   ======================= */
 
-  orderColumns : TableColumn[] = [
+  orderColumns: TableColumn[] = [
     { key: 'orderId', label: 'Order ID', type: 'text' },
     { key: 'entity', label: 'Entity', type: 'text' },
     { key: 'totalAmount', label: 'Total Amount', type: 'text' },
@@ -247,5 +255,12 @@ export class AdminDashboardComponent implements OnInit {
       : changeType === 'negative'
       ? 'text-red-600'
       : 'text-gray-600';
+  }
+
+  goToAnalytics(sectionTitle: string) {
+    if (sectionTitle === 'Products POV') {
+      this.router.navigate(['/admin/products-analytics']);
+    }
+    // Add other navigation logic if needed
   }
 }
