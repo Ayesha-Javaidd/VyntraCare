@@ -6,10 +6,12 @@ import { ModalShellComponent } from '../modal-shell/modal-shell.component';
 export interface Product {
   id?: number;
   name: string;
+  price?: number;
   category: string;
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
+  status?: 'In Stock' | 'Low Stock' | 'Out of Stock';
   unitType?: string;
   imageUrl?: string;
+  stock_quantity?: number;
 }
 
 @Component({
