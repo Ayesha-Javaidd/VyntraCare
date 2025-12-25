@@ -1,1 +1,61 @@
-<p>facility-inventory works!</p>
+<app-header pageTitle="Inventory"></app-header>
+
+<div class="p-8">
+  <!-- Stats + Action (SINGLE GRID = SYMMETRY) -->
+  <div class="grid grid-cols-3 gap-4 mb-6 items-stretch">
+    <!-- Total Items -->
+    <app-stat-card
+      title="Total Items"
+      [value]="itemTotal"
+      icon=" fas fa-truck"
+      bgColor="bg-white"
+      iconBgClass="bg-blue-100"
+      iconColorClass="text-blue-600"
+    >
+    </app-stat-card>
+
+    <!-- Low Stock -->
+    <app-stat-card
+      title="Low Stock"
+      [value]="lowStockItems"
+      icon="fas fa-warning"
+      bgColor="bg-white"
+      iconBgClass="bg-red-100"
+      iconColorClass="text-red-600"
+    >
+    </app-stat-card>
+
+    <!-- Add Button Card (same height) -->
+    <div
+      class="rounded-lg text-lg font-bold bg-blue-50 shadow flex items-center justify-center"
+    >
+      <a routerLink="/facility/products" (click)="onAddNewItem()">
+        Add new item +
+      </a>
+    </div>
+  </div>
+
+  <!-- Filters + Table (unchanged) -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold">Current Stock</h2>
+
+      <app-filters
+        [searchPlaceholder]="'Search product or SKU...'"
+        [dropdowns]="filterDropdowns"
+        (filtersChange)="onFiltersChange($event)"
+      >
+      </app-filters>
+    </div>
+
+    <app-data-table
+      [columns]="columns"
+      [rows]="filteredInventory"
+      [pageSize]="pageSize"
+      [totalItems]="totalItems"
+      [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)"
+    >
+    </app-data-table>
+  </div>
+</div>

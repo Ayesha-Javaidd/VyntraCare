@@ -1,1 +1,80 @@
-<p>facility-products works!</p>
+<app-header pageTitle="Facility Products"></app-header>
+<div class="space-y-8 p-8">
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <p class="text-slate-500 mt-1">Order essentials for {{ facilityName }}</p>
+    </div>
+
+    <!-- Search -->
+    <div class="relative">
+      <input
+        type="text"
+        placeholder="Search catalog..."
+        class="pl-4 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all w-64"
+        [(ngModel)]="search"
+      />
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+  >
+    <!-- Loading Skeleton -->
+    <ng-container *ngIf="isLoading; else data">
+      <div
+        *ngFor="let _ of [].constructor(8)"
+        class="bg-white rounded-[2rem] border border-slate-100 p-6 space-y-4 animate-pulse"
+      >
+        <div class="w-full aspect-square bg-slate-50 rounded-2xl"></div>
+        <div class="h-4 bg-slate-50 rounded w-2/3"></div>
+        <div class="h-4 bg-slate-50 rounded w-1/2"></div>
+      </div>
+    </ng-container>
+
+    <!-- Data -->
+    <ng-template #data>
+      <ng-container *ngIf="filteredProducts.length; else empty">
+        <app-product-card
+          *ngFor="let product of filteredProducts"
+          [product]="product"
+        ></app-product-card>
+      </ng-container>
+    </ng-template>
+  </div>
+
+  <!-- Empty State -->
+  <ng-template #empty>
+    <div class="col-span-full py-24 text-center">
+      <h3 class="text-xl font-bold text-slate-900 mb-2">
+        No products available
+      </h3>
+      <p class="text-slate-500">
+        Products will appear here once they are added to the catalog.
+      </p>
+    </div>
+  </ng-template>
+
+  <div
+    class="bg-blue-200 rounded-[2.5rem] p-10 text-slate-900 relative overflow-hidden"
+  >
+    <div class="relative z-10 max-w-lg">
+      <h3 class="text-2xl font-bold text-slate-600 mb-4">
+        Bulk Procurement Advantage
+      </h3>
+      <p class="text-slate-900 text-sm leading-relaxed mb-8 opacity-80">
+        Automated tiering is active for your facility. Order in case lots to
+        unlock a further 12.5% discount on all respiratory products.
+      </p>
+      <button
+        class="bg-white cursor-pointer text-blue-900 font-bold px-8 py-3 rounded-xl hover:bg-blue-50 transition-all"
+      >
+        View Price Tiers
+      </button>
+    </div>
+    <div
+      class="absolute top-0 right-0 w-96 h-96 bg-blue-600/30 rounded-full -mr-32 -mt-32 blur-3xl"
+    ></div>
+  </div>
+</div>

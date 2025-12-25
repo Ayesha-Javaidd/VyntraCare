@@ -1,1 +1,158 @@
-<p>facility-dashboard works!</p>
+<app-header pageTitle="Facility Dashboard"></app-header>
+
+<div class="space-y-8 animate-in fade-in duration-700 p-6">
+  <!-- Header -->
+  <div class="flex justify-between items-end">
+    <div class="p-4">
+      <p class="text-slate-500 mt-1">
+        Real-time inventory and logistics for {{ facilityName }}
+      </p>
+    </div>
+
+    <!-- Time Range Dropdown -->
+    <div class="hidden md:block">
+      <select
+        class="px-8 py-2 rounded-xl border bg-blue-50 cursor-pointer border-slate-200 text-sm font-bold uppercase tracking-wide text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900"
+        [value]="selectedRange"
+        (change)="onRangeChange($any($event.target).value)"
+      >
+        <option *ngFor="let range of timeRanges" [value]="range">
+          {{ range }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <app-stat-card
+      title="Stock Level"
+      [value]="isLoading ? '...' : stats.stockLevel"
+      icon="fas fa-boxes"
+      iconBgClass="bg-blue-50"
+      iconColorClass="text-blue-600"
+    ></app-stat-card>
+
+    <app-stat-card
+      title="Active Orders"
+      [value]="isLoading ? '...' : stats.activeOrders"
+      icon="fas fa-truck"
+      iconBgClass="bg-teal-50"
+      iconColorClass="text-teal-600"
+    ></app-stat-card>
+
+    <app-stat-card
+      title="Avg Weekly Usage"
+      [value]="isLoading ? '...' : stats.weeklyUsage"
+      icon="fas fa-chart-bar"
+      iconBgClass="bg-amber-50"
+      iconColorClass="text-amber-600"
+    ></app-stat-card>
+
+    <app-stat-card
+      title="Health Score"
+      [value]="stats.healthScore + '%'"
+      icon="fas fa-heartbeat"
+      iconBgClass="bg-green-50"
+      iconColorClass="text-green-600"
+    ></app-stat-card>
+  </div>
+
+  <!-- Main Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Usage Chart -->
+    <div
+      class="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm"
+    >
+      <div class="flex justify-between items-center mb-10">
+        <h3 class="text-xl font-bold text-slate-900 tracking-tight">
+          8-Week Rolling Usage
+        </h3>
+
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+            <span class="text-xs font-bold text-slate-500 uppercase">
+              Current
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-200"></span>
+            <span class="text-xs font-bold text-slate-500 uppercase">
+              Average
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="h-64 flex items-end items-stretch gap-3">
+        <div
+          *ngFor="let v of [40, 55, 45, 70, 85, 60, 95, 80]; let i = index"
+          class="flex-1 flex flex-col justify-end"
+        >
+          <div
+            class="w-full bg-blue-100 hover:bg-blue-400 transition-all rounded-t-xl"
+            [style.height.%]="v"
+          ></div>
+
+          <span
+            class="text-[10px] font-bold text-slate-400 mt-3 text-center uppercase"
+          >
+            W{{ i + 1 }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="space-y-6">
+      <!-- Inventory Action -->
+      <div class="bg-slate-900 text-white p-8 rounded-[2.5rem] shadow-xl">
+        <span class="text-[10px] font-bold text-blue-400 uppercase">
+          Inventory Action
+        </span>
+        <h3 class="text-2xl font-bold mt-2">New QR Scan Required</h3>
+        <p class="text-slate-400 text-sm mt-2">
+          System predicts "Nitrile Gloves" depletion in 48h.
+        </p>
+
+        <button
+          class="mt-6 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl transition-all"
+        >
+          Start Inventory Scan
+        </button>
+      </div>
+
+      <!-- Alerts -->
+      <div
+        class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm"
+      >
+        <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">
+          Urgent Alerts (2)
+        </h4>
+
+        <div class="space-y-4">
+          <div class="flex gap-4 p-3 hover:bg-slate-50 rounded-2xl">
+            <span class="w-2 h-2 rounded-full bg-amber-400 mt-2"></span>
+            <div>
+              <p class="text-sm font-bold text-slate-900">
+                Inbound Shipment Delay
+              </p>
+              <p class="text-xs text-slate-500">
+                Order #VY-8842 delayed by weather.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4 p-3 hover:bg-slate-50 rounded-2xl">
+            <span class="w-2 h-2 rounded-full bg-blue-400 mt-2"></span>
+            <div>
+              <p class="text-sm font-bold text-slate-900">Billing Update</p>
+              <p class="text-xs text-slate-500">Invoice for Nov is ready.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

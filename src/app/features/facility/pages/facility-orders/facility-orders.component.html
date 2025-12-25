@@ -1,1 +1,22 @@
-<p>facility-orders works!</p>
+<app-header pageTitle="Orders"></app-header>
+
+<div class="bg-white rounded-lg shadow p-6">
+  <app-filters
+    [searchPlaceholder]="'Search Order ID...'"
+    [dropdowns]="filterDropdowns"
+    (filtersChange)="onFiltersChange($event)"
+  >
+  </app-filters>
+  <br />
+  <!-- Orders Table -->
+  <app-data-table
+    [title]="title"
+    [columns]="columns"
+    [rows]="filteredOrders"
+    [pageSize]="pageSize"
+    [totalItems]="totalItems"
+    [currentPage]="currentPage"
+    (pageChange)="onPageChange($event)"
+  >
+  </app-data-table>
+</div>
