@@ -47,13 +47,14 @@
         >
           Dashboard
         </a>
-        <button
-          class="font-semibold cursor-pointer text-white hover:text-red-400 transition-colors"
+        <a
+          routerLink="/"
+          class="font-bold text-red-400 hover:text-white transition-colors"
         >
           Logout
-        </button>
+        </a>
       </ng-container>
-      <ng-template #guestLinks>
+      <ng-template>
         <a
           routerLink="/auth/login"
           class="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors"

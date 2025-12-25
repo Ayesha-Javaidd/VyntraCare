@@ -1,1 +1,222 @@
-<p>shop-checkout works!</p>
+<div class="max-w-6xl mx-auto px-6 py-12">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
+    <!-- Left Column: Forms -->
+    <div class="lg:col-span-2 space-y-12">
+      <!-- Step Indicator -->
+      <div class="flex items-center gap-4">
+        <span
+          [ngClass]="{
+            'w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors bg-blue-600 text-white':
+              step === 'shipping',
+            'w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors bg-green-500 text-white':
+              step !== 'shipping'
+          }"
+        >
+          <ng-container *ngIf="step === 'shipping'; else checkIcon"
+            >1</ng-container
+          >
+          <ng-template #checkIcon>
+            <i class="fa-solid fa-check"></i>
+          </ng-template>
+        </span>
+        <h2 class="text-2xl font-bold text-slate-900">Shipping Information</h2>
+      </div>
+
+      <!-- Shipping Step -->
+      <div
+        *ngIf="step === 'shipping'"
+        class="grid grid-cols-2 gap-6 animate-in slide-in-from-bottom-4 duration-500"
+      >
+        <div class="col-span-2 space-y-2">
+          <label
+            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+            >Full Name</label
+          >
+          <input
+            [(ngModel)]="formData.firstName"
+            type="text"
+            class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-900 outline-none transition-all"
+            placeholder="John Doe"
+          />
+        </div>
+        <div class="col-span-2 space-y-2">
+          <label
+            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+            >Delivery Address</label
+          >
+          <input
+            [(ngModel)]="formData.address"
+            type="text"
+            class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-900 outline-none transition-all"
+            placeholder="123 Healthcare Way"
+          />
+        </div>
+        <button
+          (click)="proceedToPayment()"
+          class="bg-blue-900 cursor-pointer text-white py-5 rounded-2xl font-bold text-lg hover:bg-gray-600 transition-all shadow-xl shadow-blue-100 mt-4"
+        >
+          Proceed to Payment
+        </button>
+      </div>
+
+      <!-- Payment Step -->
+      <div
+        *ngIf="step === 'payment'"
+        class="space-y-8 animate-in slide-in-from-right-4 duration-500"
+      >
+        <div class="bg-slate-900 p-8 rounded-[2.5rem] text-white">
+          <div class="flex justify-between items-start mb-12">
+            <div
+              class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center"
+            >
+              <i class="fa-solid fa-credit-card text-white/50 w-8 h-8"></i>
+            </div>
+            <span
+              class="text-xs font-bold uppercase tracking-widest text-slate-400 italic"
+              >Secure Encrypted</span
+            >
+          </div>
+          <div class="space-y-4">
+            <input
+              type="text"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="Card Number"
+            />
+            <div class="grid grid-cols-2 gap-4">
+              <input
+                type="text"
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="MM/YY"
+              />
+              <input
+                type="text"
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="CVC"
+              />
+            </div>
+          </div>
+        </div>
+        <button
+          (click)="placeOrder()"
+          [disabled]="isSubmitting"
+          class="w-full bg-green-600 text-white py-5 rounded-[2rem] font-bold text-lg hover:bg-green-700 transition-all shadow-xl shadow-green-100 disabled:opacity-50"
+        >
+          {{
+            isSubmitting
+              ? "Processing..."
+              : "Pay $" + total.toFixed(2) + " & Complete Order"
+          }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Column: Bag Summary -->
+    <div
+      class="bg-white border border-slate-100 p-8 rounded-[3rem] shadow-sm h-fit space-y-8"
+    >
+      <h3 class="text-xl font-bold text-slate-900 tracking-tight">
+        Bag Summary
+      </h3>
+      <div class="space-y-6">
+        <div *ngFor="let item of cart" class="flex gap-4">
+          <div
+            class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0"
+          >
+            <i class="fa-solid fa-box text-slate-200 w-8 h-8"></i>
+          </div>
+          <div class="flex-1">
+            <h4 class="text-sm font-bold text-slate-900 line-clamp-1">
+              {{ item.name }}
+            </h4>
+            <p class="text-xs text-slate-400 mt-1">Qty: {{ item.quantity }}</p>
+          </div>
+          <span class="text-sm font-bold text-slate-900"
+            >${{ item.base_price.toFixed(2) }}</span
+          >
+        </div>
+      </div>
+
+      <div class="pt-8 border-t border-slate-50 space-y-4">
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-500">Subtotal</span>
+          <span class="text-slate-900 font-bold">${{ total.toFixed(2) }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-500">Shipping</span>
+          <span class="text-green-600 font-bold">Complimentary</span>
+        </div>
+        <div
+          class="flex justify-between items-center pt-4 border-t border-slate-900"
+        >
+          <span class="text-lg font-black text-slate-900">Total</span>
+          <span class="text-3xl font-black text-slate-900"
+            >${{ total.toFixed(2) }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Step -->
+  <div
+    *ngIf="step === 'confirmation'"
+    class="max-w-2xl mx-auto py-20 text-center space-y-8"
+  >
+    <div
+      class="w-24 h-24 bg-green-50 text-green-600 rounded-[2.5rem] flex items-center justify-center mx-auto animate-in zoom-in duration-500"
+    >
+      <i class="fa-solid fa-check text-green-600 text-2xl"></i>
+    </div>
+    <div>
+      <h1 class="text-4xl font-black text-slate-900 tracking-tight">
+        Order Confirmed
+      </h1>
+      <p class="text-slate-500 mt-4 text-lg">
+        Your medical supplies are being prepared for dispatch.
+      </p>
+    </div>
+    <div
+      class="bg-slate-50 p-8 rounded-[2.5rem] text-left border border-slate-100"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest"
+          >Order Reference</span
+        >
+        <span class="font-mono font-bold text-slate-900">#{{ orderId }}</span>
+      </div>
+      <div class="space-y-4 pt-6 border-t border-slate-200">
+        <div *ngFor="let item of cart" class="flex justify-between text-sm">
+          <span class="text-slate-600 font-medium"
+            >{{ item.name }} x{{ item.quantity }}</span
+          >
+          <span class="text-slate-900 font-bold"
+            >${{ item.base_price.toFixed(2) }}</span
+          >
+        </div>
+        <div
+          class="flex justify-between items-center pt-4 mt-2 border-t border-slate-900"
+        >
+          <span class="text-slate-900 font-black uppercase tracking-tighter"
+            >Total Paid</span
+          >
+          <span class="text-2xl font-black text-slate-900"
+            >${{ total.toFixed(2) }}</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+      <button
+        class="bg-slate-900 text-white px-10 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all"
+      >
+        Track Order Status
+      </button>
+      <button
+        (click)="continueShopping()"
+        class="bg-white border border-slate-200 text-slate-600 px-10 py-4 rounded-2xl font-bold hover:bg-slate-50 transition-all"
+      >
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+</div>

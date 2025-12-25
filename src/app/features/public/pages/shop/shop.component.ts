@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 interface Product {
   id: string;
@@ -20,9 +21,9 @@ const CATEGORIES = [
 
 @Component({
   selector: 'app-public-shop',
-  templateUrl: './shop.component.html',
+  templateUrl: 'shop.component.html',
   styleUrl: './shop.component.css',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
 })
 export class ShopComponent implements OnInit {
   products: Product[] = [];
