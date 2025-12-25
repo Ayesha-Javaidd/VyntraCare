@@ -1,0 +1,8 @@
+<button
+  [type]="type"
+  (click)="handleClick()"
+  [ngClass]="[baseStyles, variants[variant], className]"
+>
+  <span *ngIf="icon" class="inline-flex" [innerHTML]="icon"></span>
+  {{ label }}
+</button>

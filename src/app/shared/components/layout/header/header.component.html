@@ -1,0 +1,31 @@
+<header
+  class="flex items-center justify-between bg-white px-6 py-4 shadow-md sticky top-0 z-10"
+>
+  <!-- Left: Page Title -->
+  <div class="flex items-center space-x-2">
+    <h1 class="text-2xl font-bold text-[#0A1A33]">{{ title }}</h1>
+  </div>
+
+  <!-- Right: Profile -->
+  <div class="flex items-center space-x-3">
+    <!-- Profile Name -->
+    <span class="text-[#0A1A33] font-medium hidden sm:inline">
+      {{ profileName }}
+    </span>
+
+    <!-- Profile Avatar -->
+    <img
+      *ngIf="profileImage; else defaultAvatar"
+      [src]="profileImage"
+      alt="Profile"
+      class="w-10 h-10 rounded-full object-cover border border-gray-300"
+    />
+    <ng-template #defaultAvatar>
+      <div
+        class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold"
+      >
+        {{ profileName.charAt(0) }}
+      </div>
+    </ng-template>
+  </div>
+</header>

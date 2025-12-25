@@ -1,0 +1,20 @@
+<div [ngClass]="'apple-card p-6 ' + className">
+  <div
+    *ngIf="title || description || headerAction"
+    class="flex items-center justify-between mb-6"
+  >
+    <div>
+      <h3
+        *ngIf="title"
+        class="text-lg font-semibold tracking-tight text-foreground"
+      >
+        {{ title }}
+      </h3>
+      <p *ngIf="description" class="text-sm text-muted-foreground">
+        {{ description }}
+      </p>
+    </div>
+    <div *ngIf="headerAction" [innerHTML]="headerAction"></div>
+  </div>
+  <ng-content></ng-content>
+</div>

@@ -1,0 +1,269 @@
+<div class="p-6 space-y-6">
+  <p class="text-muted-foreground mt-2">
+    Manage operational status and details for all care centers.
+  </p>
+
+  <button
+    (click)="addNewFacility()"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+  >
+    <i class="fas fa-plus mr-2"></i>
+    Add New Facility
+  </button>
+
+  <!-- Filters Section -->
+  <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <!-- Search -->
+      <div class="relative md:col-span-2">
+        <div
+          class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+        >
+          <i class="fas fa-search text-gray-400"></i>
+        </div>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onFilterChange()"
+          placeholder="Search facilities, managers..."
+          class="w-full pl-10 p-2.5 border border-border rounded-lg bg-background text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
+
+      <!-- Status Filter -->
+      <div>
+        <select
+          [(ngModel)]="selectedStatus"
+          (ngModelChange)="onFilterChange()"
+          class="w-full p-2.5 border border-border rounded-lg bg-background text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Sort Filter -->
+      <div>
+        <select
+          [(ngModel)]="selectedSort"
+          (ngModelChange)="onFilterChange()"
+          class="w-full p-2.5 border border-border rounded-lg bg-background text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Results Count and Actions -->
+    <div
+      class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
+    >
+      <div class="text-sm text-muted-foreground">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+        {{ paginationEnd }} of {{ filteredFacilities.length }} facilities
+      </div>
+      <div class="flex items-center gap-3">
+        <button
+          (click)="resetFilters()"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
+        >
+          <i class="fas fa-filter-circle-xmark mr-2"></i>
+          Clear Filters
+        </button>
+        <div class="flex items-center gap-2">
+          <button
+            class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-full"
+          >
+            <i class="fas fa-download"></i>
+          </button>
+          <button
+            class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-full"
+          >
+            <i class="fas fa-print"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Facilities Table -->
+    <div class="overflow-x-auto">
+      <app-table
+        [headers]="facilityHeaders"
+        [rows]="paginatedFacilities"
+        className="min-w-full"
+      >
+        <ng-template #rowTemplate let-facility>
+          <!-- Facility Name -->
+          <td class="py-4 px-4">
+            <div class="flex flex-col">
+              <div class="font-medium text-base">{{ facility.name }}</div>
+              <div class="text-sm text-muted-foreground mt-1">
+                {{ facility.facilityId }}
+              </div>
+            </div>
+          </td>
+
+          <!-- Manager Name -->
+          <td class="py-4 px-4">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center"
+              >
+                <i class="fas fa-user text-blue-600 text-sm"></i>
+              </div>
+              <span class="font-medium">{{ facility.managerName }}</span>
+            </div>
+          </td>
+
+          <!-- Status -->
+          <td class="py-4 px-4">
+            <div class="flex items-center gap-2">
+              <i [ngClass]="getStatusIcon(facility.status)" class="text-sm"></i>
+              <span
+                class="px-3 py-1 rounded-full text-xs font-medium"
+                [ngClass]="getStatusClass(facility.status)"
+              >
+                {{ facility.status }}
+              </span>
+            </div>
+          </td>
+
+          <!-- Location -->
+          <td class="py-4 px-4">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-map-marker-alt text-gray-400"></i>
+              <span>{{ facility.location }}</span>
+            </div>
+          </td>
+
+          <!-- Orders -->
+          <td class="py-4 px-4">
+            <div class="flex items-center gap-2">
+              <div class="w-16 bg-gray-200 rounded-full h-2">
+                <div
+                  class="bg-blue-600 h-2 rounded-full"
+                  Showing
+                  {{
+                  (currentPage
+                  -
+                  1)
+                  *
+                  itemsPerPage
+                  +
+                  1
+                  }}
+                  to
+                  {{
+                  paginationEnd
+                  }}
+                  of
+                  {{
+                  filteredFacilities.length
+                  }}
+                  facilities
+                ></div>
+              </div>
+              <span class="font-medium text-lg">{{
+                facility.orders.toLocaleString()
+              }}</span>
+            </div>
+          </td>
+
+          <!-- Actions -->
+          <td class="py-4 px-4">
+            <div class="flex items-center gap-2">
+              <button
+                (click)="viewDetails(facility)"
+                class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full"
+                title="View Details"
+              >
+                <i class="fas fa-eye text-blue-600"></i>
+              </button>
+              <button
+                (click)="editFacility(facility)"
+                class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full"
+                title="Edit"
+              >
+                <i class="fas fa-edit text-green-600"></i>
+              </button>
+              <button
+                (click)="toggleStatus(facility)"
+                class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full"
+                [title]="'Toggle Status (Current: ' + facility.status + ')'"
+              >
+                <i
+                  [ngClass]="{
+                    'fa-toggle-on text-green-600': facility.status === 'Active',
+                    'fa-toggle-off text-red-600': facility.status !== 'Active'
+                  }"
+                  class="fas"
+                ></i>
+              </button>
+            </div>
+          </td>
+        </ng-template>
+      </app-table>
+    </div>
+
+    <!-- Pagination -->
+    <div
+      class="flex items-center justify-between mt-6 pt-6 border-t border-border"
+    >
+      <!-- Items per page selector -->
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-muted-foreground">Show</span>
+        <select
+          [(ngModel)]="itemsPerPage"
+          (ngModelChange)="onFilterChange()"
+          class="text-sm border border-border rounded-md p-1"
+        >
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+        <span class="text-sm text-muted-foreground">per page</span>
+      </div>
+
+      <!-- Page navigation -->
+      <div class="flex items-center gap-2">
+        <button
+          (click)="previousPage()"
+          [disabled]="currentPage === 1"
+          class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-full disabled:text-gray-400"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Page numbers -->
+        <div class="flex items-center gap-1">
+          <button
+            *ngFor="let page of pageNumbers"
+            (click)="changePage(page)"
+            [class.bg-primary]="page === currentPage"
+            [class.text-primary-foreground]="page === currentPage"
+            class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-full"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <button
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-full disabled:text-gray-400"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- Page info -->
+      <div class="text-sm text-muted-foreground hidden md:block">
+        Page {{ currentPage }} of {{ totalPages }}
+      </div>
+    </div>
+  </div>
+</div>

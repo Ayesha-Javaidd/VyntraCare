@@ -1,0 +1,37 @@
+<aside class="w-72 min-h-screen bg-[#0A1A33] p-6 flex flex-col text-gray-200">
+  <!-- Logo -->
+  <a
+    routerLink="/admin/dashboard"
+    class="mb-10 flex items-center gap-3 px-2 hover:opacity-80 transition-opacity"
+  >
+    <div
+      class="w-10 h-10 bg-[#1F2A4D] rounded-lg flex items-center justify-center"
+    >
+      <span class="text-white font-bold text-lg">V</span>
+    </div>
+    <h2 class="text-xl font-semibold tracking-tight text-white">Vyntra Care</h2>
+  </a>
+
+  <!-- Navigation -->
+  <nav class="flex-1 space-y-2">
+    <a
+      *ngFor="let item of navItems"
+      routerLink="{{ item.href }}"
+      routerLinkActive="bg-[#1F2A4D] text-white shadow-md"
+      class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-[#1F2A4D] hover:text-white transition-colors duration-200"
+    >
+      <i [ngClass]="item.icon"></i>
+      {{ item.label }}
+    </a>
+  </nav>
+
+  <!-- Logout -->
+  <div class="pt-6 mt-auto border-t border-[#1F2A4D]">
+    <button
+      class="w-full flex cursor-pointer items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-red-600/10 transition-colors"
+    >
+      <i class="log-out w-5 h-5"></i>
+      Logout
+    </button>
+  </div>
+</aside>

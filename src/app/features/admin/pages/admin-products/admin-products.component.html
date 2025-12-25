@@ -1,0 +1,310 @@
+<div class="p-6 space-y-6">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <p class="text-muted-foreground mt-2">
+      Detailed product performance insights
+    </p>
+
+    <button
+      (click)="addNewProduct()"
+      class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+    >
+      <i class="fas fa-plus mr-2"></i>
+      Add New Product
+    </button>
+  </div>
+
+  <!-- Analytics Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Total Products Card -->
+    <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm font-medium text-muted-foreground mb-2">
+            Total Products
+          </p>
+          <h3 class="text-3xl font-bold tracking-tight">{{ totalProducts }}</h3>
+          <p class="text-sm text-muted-foreground mt-2">Active in inventory</p>
+        </div>
+        <div
+          class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100"
+        >
+          <i class="fas fa-boxes text-xl text-blue-600"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Sold Card -->
+    <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm font-medium text-muted-foreground mb-2">
+            Total Quantity Sold
+          </p>
+          <h3 class="text-3xl font-bold tracking-tight">
+            {{ totalSold.toLocaleString() }}
+          </h3>
+          <p class="text-sm text-muted-foreground mt-2">Across all products</p>
+        </div>
+        <div
+          class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100"
+        >
+          <i class="fas fa-chart-line text-xl text-green-600"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Stock Card -->
+    <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm font-medium text-muted-foreground mb-2">
+            Available Quantity
+          </p>
+          <h3 class="text-3xl font-bold tracking-tight">
+            {{ totalAvailable.toLocaleString() }}
+          </h3>
+          <p class="text-sm text-muted-foreground mt-2">
+            Current inventory stock
+          </p>
+        </div>
+        <div
+          class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100"
+        >
+          <i class="fas fa-warehouse text-xl text-purple-600"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Average Margin Card -->
+    <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm font-medium text-muted-foreground mb-2">
+            Average Margin
+          </p>
+          <h3 class="text-3xl font-bold tracking-tight">
+            {{ averageMargin.toFixed(1) }}%
+          </h3>
+          <p class="text-sm text-muted-foreground mt-2">Across all products</p>
+        </div>
+        <div
+          class="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100"
+        >
+          <i class="fas fa-percentage text-xl text-yellow-600"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
+    <div
+      class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
+    >
+      <h2 class="text-xl font-semibold">Analytics (Products POV)</h2>
+      <button
+        (click)="resetFilters()"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
+      >
+        <i class="fas fa-filter-circle-xmark mr-2"></i>
+        Reset Filters
+      </button>
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <!-- Search -->
+      <div class="relative">
+        <div
+          class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+        >
+          <i class="fas fa-search text-gray-400"></i>
+        </div>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Search products..."
+          class="w-full pl-10 p-2.5 border border-border rounded-lg bg-background text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
+
+      <!-- Category Filter -->
+      <div>
+        <select
+          [(ngModel)]="selectedCategory"
+          class="w-full p-2.5 border border-border rounded-lg bg-background text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option *ngFor="let option of categoryOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Status Filter -->
+      <div>
+        <select
+          [(ngModel)]="selectedStatus"
+          class="w-full p-2.5 border border-border rounded-lg bg-background text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Sort Filter -->
+      <div>
+        <select
+          [(ngModel)]="selectedSort"
+          class="w-full p-2.5 border border-border rounded-lg bg-background text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-sm text-muted-foreground">
+        Showing {{ filteredProducts.length }} of {{ products.length }} products
+      </p>
+      <div class="flex items-center gap-2">
+        <i
+          class="fas fa-download text-muted-foreground cursor-pointer hover:text-primary"
+        ></i>
+        <i
+          class="fas fa-print text-muted-foreground cursor-pointer hover:text-primary"
+        ></i>
+      </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="overflow-x-auto">
+      <app-table [headers]="productHeaders" [rows]="filteredProducts">
+        <ng-template #rowTemplate let-product>
+          <td class="py-4 px-4 font-medium">
+            <div class="flex flex-col">
+              <span>{{ product.name }}</span>
+              <span class="text-xs text-muted-foreground mt-1">
+                Last updated: {{ product.lastUpdated }}
+              </span>
+            </div>
+          </td>
+          <td class="py-4 px-4">
+            <span
+              class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+            >
+              {{ product.category }}
+            </span>
+          </td>
+          <td class="py-4 px-4 font-medium">
+            {{ product.quantitySold.toLocaleString() }}
+          </td>
+          <td class="py-4 px-4">
+            <div class="flex items-center gap-2">
+              <span
+                [ngClass]="
+                  getStockLevel(product.availableQty, product.quantitySold)
+                "
+                class="font-medium"
+              >
+                {{ product.availableQty.toLocaleString() }}
+              </span>
+              <div class="w-16 bg-gray-200 rounded-full h-2">
+                <div
+                  class="bg-green-600 h-2 rounded-full"
+                  [ngClass]="{
+                    'bg-red-600':
+                      getStockLevel(
+                        product.availableQty,
+                        product.quantitySold
+                      ) === 'text-red-600',
+                    'bg-yellow-600':
+                      getStockLevel(
+                        product.availableQty,
+                        product.quantitySold
+                      ) === 'text-yellow-600',
+                    'bg-green-600':
+                      getStockLevel(
+                        product.availableQty,
+                        product.quantitySold
+                      ) === 'text-green-600'
+                  }"
+                  [style.width.%]="
+                    (product.availableQty /
+                      (product.availableQty + product.quantitySold)) *
+                    100
+                  "
+                ></div>
+              </div>
+            </div>
+          </td>
+          <td class="py-4 px-4 font-medium">
+            ${{ product.avgSalePrice.toFixed(2) }}
+          </td>
+          <td class="py-4 px-4 text-muted-foreground">
+            ${{ product.avgPurchasePrice.toFixed(2) }}
+          </td>
+          <td class="py-4 px-4">
+            <span [ngClass]="getMarginClass(product.margin)" class="font-bold">
+              {{ product.margin.toFixed(1) }}%
+            </span>
+          </td>
+          <td class="py-4 px-4">
+            <span
+              class="px-3 py-1 rounded-full text-xs font-medium"
+              [ngClass]="getStatusClass(product.status)"
+            >
+              {{ product.status }}
+            </span>
+          </td>
+          <td class="py-4 px-4">
+            <div class="flex items-center gap-2">
+              <button
+                (click)="editProduct(product)"
+                class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full"
+                title="Edit"
+              >
+                <i class="fas fa-edit text-blue-600"></i>
+              </button>
+              <button
+                (click)="deleteProduct(product)"
+                class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full"
+                title="Delete"
+              >
+                <i class="fas fa-trash-alt text-red-600"></i>
+              </button>
+            </div>
+          </td>
+        </ng-template>
+      </app-table>
+    </div>
+
+    <!-- Pagination (Optional) -->
+    <div
+      class="flex items-center justify-between mt-6 pt-6 border-t border-border"
+    >
+      <div class="text-sm text-muted-foreground">Page 1 of 1</div>
+      <div class="flex items-center gap-2">
+        <button
+          class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-full"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button
+          class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-full"
+        >
+          1
+        </button>
+        <button
+          class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 rounded-full"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

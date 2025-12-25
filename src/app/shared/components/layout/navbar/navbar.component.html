@@ -1,0 +1,70 @@
+<nav
+  class="sticky top-0 z-50 bg-[#0A1A33] backdrop-blur-md border-b border-[#0A1A33]/20"
+>
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <!-- Logo -->
+    <a routerLink="/" class="flex items-center gap-2 group">
+      <div
+        class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-[#0A1A33] font-bold text-xl group-hover:scale-110 transition-transform"
+      >
+        V
+      </div>
+      <span class="text-xl font-bold text-white tracking-tight"
+        >Vyntra Care</span
+      >
+    </a>
+
+    <!-- Desktop Links -->
+    <div class="hidden md:flex items-center gap-8">
+      <a
+        routerLink="/shop"
+        class="font-semibold text-white hover:text-[#63B3ED] transition-colors"
+        >Shop</a
+      >
+      <a
+        routerLink="/shop/sizing"
+        class="font-semibold text-white hover:text-[#63B3ED] transition-colors"
+        >AI Sizing</a
+      >
+      <a
+        routerLink="/about"
+        class="font-semibold text-white hover:text-[#63B3ED] transition-colors"
+        >About</a
+      >
+      <a
+        routerLink="/contact"
+        class="font-semibold text-white hover:text-[#63B3ED] transition-colors"
+        >Contact</a
+      >
+    </div>
+
+    <!-- Auth / Dashboard -->
+    <div class="flex items-center gap-4">
+      <ng-container>
+        <a
+          routerLink="/admin/dashboard"
+          class="font-bold text-[#63B3ED] hover:text-white transition-colors"
+        >
+          Dashboard
+        </a>
+        <button
+          class="font-semibold cursor-pointer text-white hover:text-red-400 transition-colors"
+        >
+          Logout
+        </button>
+      </ng-container>
+      <ng-template #guestLinks>
+        <a
+          routerLink="/auth/login"
+          class="text-sm font-semibold text-white hover:text-[#63B3ED] transition-colors"
+          >Login</a
+        >
+        <a
+          routerLink="/auth/signup"
+          class="bg-white text-[#0A1A33] px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-[#E2E8F0] transition-all"
+          >Sign Up</a
+        >
+      </ng-template>
+    </div>
+  </div>
+</nav>

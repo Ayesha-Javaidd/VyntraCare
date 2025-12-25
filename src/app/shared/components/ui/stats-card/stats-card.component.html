@@ -1,0 +1,27 @@
+<div class="bg-card rounded-lg border border-border p-6 shadow-sm">
+  <div class="flex items-start justify-between">
+    <div>
+      <p class="text-sm font-medium text-muted-foreground mb-2">{{ title }}</p>
+      <h3 class="text-3xl font-bold tracking-tight">{{ value }}</h3>
+      <div class="flex items-center mt-2">
+        <span
+          [class.text-green-600]="changeType === 'positive'"
+          [class.text-red-600]="changeType === 'negative'"
+          [class.text-gray-600]="changeType === 'neutral'"
+          class="text-sm font-medium"
+        >
+          {{ change }}
+        </span>
+        <span class="text-sm text-muted-foreground ml-2">vs last period</span>
+      </div>
+    </div>
+
+    <div
+      *ngIf="icon"
+      class="flex items-center justify-center w-12 h-12 rounded-full"
+      [ngClass]="iconBgColor"
+    >
+      <i [class]="icon + ' text-xl'" [ngClass]="iconColor"></i>
+    </div>
+  </div>
+</div>
